@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import PokemonCard from "../components/PokemonCard";
 import Titre from "../components/Titre";
 
@@ -13,25 +13,35 @@ const POKEMONS = [
 ];
 
 export default function Index() {
-  const [count, setCount] = useState(0);
-  return (
+  const [pokeballs, setPokeballs] = useState(0);
 
+  return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Titre texte="Mon Pokédex" />
       <Text>{POKEMONS.length} Pokémon</Text>
-      <Pressable onPress={()=>setCount(count +1)}>
-        <Text>+1</Text>
-      </Pressable>
-      <Pressable onPress={()=>setCount(count - 1)}>
-        <Text>-1</Text>
+
+      <Text>Poké Balls : {pokeballs}</Text>
+
+      <Pressable onPress={() => {
+        if (pokeballs < 10) {
+          setPokeballs(pokeballs + 1)
+        }
+      }}>
+        <Text>+</Text>
       </Pressable>
 
-      <Pressable onPress={()=>setCount(0)}>
-        <Text>reset</Text>
+      <Pressable onPress={() => {
+        if (pokeballs > 0) {
+          setPokeballs(pokeballs - 1)
+        }
+      }}>
+        <Text>-</Text>
       </Pressable>
 
-      <Text>{count}</Text>
-      
+      <Pressable onPress={() => setPokeballs(0)}>
+        <Text>Vider le sac</Text>
+      </Pressable>
+
       {POKEMONS.map((p) => (
         <PokemonCard
           key={p.number}
@@ -46,6 +56,7 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   scrollView: {
-    padding: 16, gap: 12
-  }
-})
+    padding: 16,
+    gap: 12,
+  },
+});
