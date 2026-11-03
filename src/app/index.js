@@ -13,36 +13,28 @@ const POKEMONS = [
 ];
 
 export default function Index() {
-  const [pokeballs, setPokeballs] = useState(0);
+  const [onlyFire, setOnlyFire] = useState(false);
+
+  const displayed = onlyFire
+    ? POKEMONS.filter((p) => p.type === "Feu")
+    : POKEMONS;
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Titre texte="Mon Pokédex" />
-      <Text>{POKEMONS.length} Pokémon</Text>
+      <Text>{displayed.length} Pokémon</Text>
 
-      <Text>Poké Balls : {pokeballs}</Text>
-
-      <Pressable onPress={() => {
-        if (pokeballs < 10) {
-          setPokeballs(pokeballs + 1)
-        }
-      }}>
-        <Text>+</Text>
+      <Pressable
+        onPress={() => setOnlyFire(!onlyFire)}
+        style={[styles.filterButton, onlyFire && styles.filterButtonActive]}
+      >
+        <Text style={[styles.filterText, onlyFire && styles.filterTextActive]}>
+          {onlyFire ? "Afficher tous les Pokémon" : "Afficher seulement le type Feu"}
+        </Text>
       </Pressable>
 
-      <Pressable onPress={() => {
-        if (pokeballs > 0) {
-          setPokeballs(pokeballs - 1)
-        }
-      }}>
-        <Text>-</Text>
-      </Pressable>
 
-      <Pressable onPress={() => setPokeballs(0)}>
-        <Text>Vider le sac</Text>
-      </Pressable>
-
-      {POKEMONS.map((p) => (
+      {displayed.map((p) => (
         <PokemonCard
           key={p.number}
           number={p.number}
@@ -56,7 +48,14 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   scrollView: {
-    padding: 16,
-    gap: 12,
+    padding: 16, gap: 12
   },
+  filterButton: {
+    alignSelf: "flex-start",
+    backgroundColor: "#ECE8DE",
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10
+  },
+  filterButtonActive: { backgroundColor: "#F08030" },
+  filterText: { fontWeight: "bold", color: "#333333" },
+  filterTextActive: { color: "#FFFFFF" },
 });
