@@ -24,10 +24,23 @@ export default function Index() {
   async function charger() {
     const reponse = await fetch(API);
     const data = await reponse.json();
-    const liste = data.results.map((p, i) => ({
-      number: i + 1,
-      name: p.name.charAt(0).toUpperCase() + p.name.slice(1),
-    }));
+    // Noms français : un appel "espèce" par Pokémon, en parallèle
+    const liste = await Promise.all(
+      data.results.map(async (p, i) => {
+        const number = i + 1;
+        const anglais = p.name.charAt(0).toUpperCase() + p.name.slice(1);
+        try {
+          const rep = await fetch(
+            `https://pokeapi.co/api/v2/pokemon-species/${number}`
+          );
+          const espece = await rep.json();
+          const fr = espece.names.find((n) => n.language.name === "fr");
+          return { number, name: fr ? fr.name : anglais };
+        } catch (e) {
+          return { number, name: anglais };
+        }
+      })
+    );
     setPokemons(liste);
   }
 
