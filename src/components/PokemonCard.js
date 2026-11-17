@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const ARTWORK =
@@ -11,37 +10,43 @@ const TYPE_COLORS = {
     Eau: "#6890F0",
     Électrik: "#F8D030",
 };
-    
-export default function PokemonCard({ number, name, type }) {
-    const color = TYPE_COLORS[type];
-    const [captured, setCaptured] = useState(false);
+
+export default function PokemonCard({ number, name, type, captured, onToggle, onOpen }) {
+    const color = TYPE_COLORS[type] || "#D9D4C7";
     return (
-        <View style={[styles.card, { backgroundColor: color }]}>
+        <Pressable
+            onPress={onOpen}
+            style={[
+                styles.card,
+                { backgroundColor: color },
+                captured && styles.cardCaptured,
+            ]}
+        >
             <Image source={{ uri: `${ARTWORK}${number}.png` }} style={styles.image} />
             <View>
                 <Text style={styles.number}>#{number}</Text>
                 <Text style={styles.name}>{name}</Text>
-                <Text style={styles.type}>{type}</Text>
+                {type && <Text style={styles.type}>{type}</Text>}
             </View>
             <Pressable
-                onPress={() => setCaptured(!captured)}
+                onPress={onToggle}
                 style={[styles.button, captured && styles.buttonCaptured]}
             >
                 <Text style={[styles.buttonText, captured && styles.buttonTextCaptured]}>
-                    {captured ? "Captured" : "Capture"}
+                    {captured ? "Capturé ✓" : "Capturer"}
                 </Text>
             </Pressable>
-        </View>
+        </Pressable>
     );
-
 }
-
 
 const styles = StyleSheet.create({
     card: {
         flexDirection: "row", alignItems: "center", gap: 12,
-        padding: 12, borderRadius: 14
+        padding: 12, borderRadius: 14,
+        borderWidth: 3, borderColor: "transparent",
     },
+    cardCaptured: { borderColor: "#2563EB" },
     image: { width: 80, height: 80 },
     number: { color: "#888888" },
     name: { fontSize: 18, fontWeight: "bold" },
@@ -56,5 +61,4 @@ const styles = StyleSheet.create({
     buttonCaptured: { backgroundColor: "#2563EB" },
     buttonText: { fontWeight: "bold", color: "#333333" },
     buttonTextCaptured: { color: "#FFFFFF" },
-
 });
